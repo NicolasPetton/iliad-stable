@@ -6,7 +6,7 @@ Eval [
     prereq: 'Iliad-Swazoo';
     prereq: 'Iliad-More';
 
-    url: 'git://github.com/NicolasPetton/iliad.git';
+    url: 'git://github.com/NicolasPetton/iliad-stable.git';
 
     buildXml
 ]
