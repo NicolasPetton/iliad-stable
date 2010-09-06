@@ -15,13 +15,36 @@ TestCase subclass: ILUrlBuilderTest [
 	ILApplicationMock2 path: nil
     ]
 
-    testAbsolutePath [
+    withContextDo: aBlock [
+	<category: 'convenience'>
+	| session |
+	session := ILSession new.
+	ILCurrentContext
+	    use: (ILContext new
+		session: session;
+		request: (ILRequest new
+		    cookies: (Dictionary new
+			at: ILSessionManager current cookieName
+			put: session id asString;
+			yourself)
+		    yourself))
+		during: aBlock
+    ]
+
+    testUrlForApplication [
 	<category: 'testing'>
 	| app1 app2 |
 	app1 := ILApplicationMock1 new.
 	app2 := ILApplicationMock2 new.
-	self assert: (ILUrlBuilder new absolutePathFor: app1 class) = '/test'.
-	self assert: (ILUrlBuilder new absolutePathFor: app2 class) = '/test/foo'.
+	self withContextDo: [
+	    self assert: (ILUrlBuilder new urlFor: app1 class path) asString = '/test'.
+	    self assert: (ILUrlBuilder new urlFor: app2 class path) asString = '/test/foo']
+    ]
+
+    testParametersInUrls [
+	<category: 'testing'>
+	self withContextDo: [
+	    self assert: (ILUrlBuilder new urlFor: '/foo?bar=baz') asString = '/foo?bar=baz']
     ]
 ]
 

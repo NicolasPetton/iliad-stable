@@ -95,12 +95,22 @@ ILObject subclass: ILStateRegistry [
     dirtyWidgets [
 	"Answer all widgets which state has changed"
 	<category: 'states'>
+	^self dirtyChildrenOf: self session application
+    ]
 
+    dirtyChildrenOf: aBuildable [
+	<category: 'states'>
 	| dirtyWidgets |
 	dirtyWidgets := OrderedCollection new.
-	self widgets do: [:each |
-	    (self stateAt: each) = each state ifFalse: [
-		dirtyWidgets add: each]].
+	aBuildable children do: [:each |
+	    (self isWidgetDirty: each)
+		ifTrue: [dirtyWidgets add: each]
+		ifFalse: [dirtyWidgets addAll: (self dirtyChildrenOf: each)]].
 	^dirtyWidgets
+    ]
+
+    isWidgetDirty: aWidget [
+	<category: 'testing'>
+	^(self stateAt: aWidget) ~= aWidget state
     ]
 ]

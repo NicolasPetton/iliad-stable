@@ -38,7 +38,7 @@
 
 
 ILWidget subclass: ILFormula [
-    | proxy conditions fields buttons saveAction cancelAction errors |
+    | proxy conditions fields buttons saveAction cancelAction errors multipart |
 	
     <category: 'Iliad-More-Formula'>
     <comment: nil>
@@ -123,6 +123,16 @@ ILWidget subclass: ILFormula [
 	cancelAction := aBlock
     ]
 
+    beMultipart [
+	<category: 'accessing'>
+	multipart := true
+    ]
+
+    multipart [
+	<category: 'accessing'>
+	^multipart ifNil: [false]
+    ]
+
     defaultButtons [
 	<category: 'defaults'>
 	^{'Save' -> #save. 'Cancel' -> #cancel}
@@ -130,7 +140,7 @@ ILWidget subclass: ILFormula [
 
     defaultSaveAction [
 	<category: 'defaults'>
-	^[:model | self answer: self model]
+	^[:model | self commit. self answer: self model]
     ]
 
     defaultCancelAction [
@@ -166,6 +176,11 @@ ILWidget subclass: ILFormula [
     dateInputOn: aSelector [
 	<category: 'adding'>
 	^self addField: (ILDateInputField on: self selector: aSelector)
+    ]
+
+    numberInputOn: aSelector [
+	<category: 'adding'>
+	^self addField: (ILNumberInputField on: self selector: aSelector)
     ]
 
     selectOn: aSelector [
@@ -235,7 +250,11 @@ ILWidget subclass: ILFormula [
 		build: [:div |
 		    div form build: [:form |
 			form multipart: self isMultipart.
-			form table tbody build: self tableContents.
+			form 
+			    div
+				class: 'fields';
+				build: [:div2 |
+				    div2 table tbody build: self tableContents].
 			form div 
 			    class: 'buttons';
 			    build: self buttonsContents]]]
@@ -274,7 +293,6 @@ ILWidget subclass: ILFormula [
 	    validate;
 	    markDirty.
 	self isValid ifTrue: [
-	    self commit.
 	    self saveAction cull: self model]
     ]
 
@@ -312,7 +330,8 @@ ILWidget subclass: ILFormula [
 
     isMultipart [
 	<category: 'testing'>
-	^(self fields select: [:each | each isMultipart]) notEmpty
+	^self multipart or: [
+	    (self fields select: [:each | each isMultipart]) notEmpty]
     ]
 
     setModel: anObject [

@@ -7,9 +7,11 @@ Eval [
     prereq: 'SUnit';
     testsBelow: 'Unit' matching: '*.st';
 
+    filein: 'Unit/Buildables/ILApplicationMock.st';
     filein: 'Unit/Buildables/ILApplicationMock1.st';
     filein: 'Unit/Buildables/ILApplicationMock2.st';
     filein: 'Unit/Buildables/ILApplicationTest.st';
+    filein: 'Unit/Buildables/ILBuildableMock.st';
     filein: 'Unit/Buildables/ILBuildableTest.st';
     filein: 'Unit/Buildables/ILWidgetMock1.st';
     filein: 'Unit/Buildables/ILWidgetMock2.st';
@@ -20,7 +22,7 @@ Eval [
     filein: 'Unit/Dispatching/ILRouteTest.st';
 
     filein: 'Unit/Elements/ILElementTest.st';
-    filein: 'Unit/Elements/ILXHTMLElementTest.st';
+    filein: 'Unit/Elements/ILHTMLBuilderElementTest.st';
     filein: 'Unit/Elements/ILAnchorElementTest.st';
     filein: 'Unit/Elements/ILAreaElementTest.st';
     filein: 'Unit/Elements/ILBodyElementTest.st';

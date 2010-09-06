@@ -16,6 +16,7 @@
     <filein>Unit/Utilities/ILIdTest.st</filein>
     <filein>Unit/Utilities/ILCompositeTest.st</filein>
     <filein>Unit/Utilities/ILModelProxyTest.st</filein>
+    <filein>Unit/Buildables/ILApplicationMock.st</filein>
     <filein>Unit/Buildables/ILApplicationTest.st</filein>
     <filein>Unit/Buildables/ILWidgetMock2.st</filein>
     <filein>Unit/Buildables/ILWidgetTest.st</filein>
@@ -24,6 +25,7 @@
     <filein>Unit/Buildables/ILBuildableTest.st</filein>
     <filein>Unit/Buildables/ILWidgetMock3.st</filein>
     <filein>Unit/Buildables/ILWidgetMock1.st</filein>
+    <filein>Unit/Buildables/ILBuildableMock.st</filein>
     <filein>Unit/RequestHandlers/ILRequestHandlerTest.st</filein>
     <filein>Unit/RequestHandlers/ILFileHandlerTest.st</filein>
     <filein>Unit/RSS/ILRSSElementTest.st</filein>
@@ -64,6 +66,7 @@
     <filein>Unit/Elements/ILTableElementTest.st</filein>
     <filein>Unit/Elements/ILTableDataElementTest.st</filein>
     <filein>Unit/Elements/ILFormElementTest.st</filein>
+    <filein>Unit/Elements/ILHTMLBuilderElementTest.st</filein>
     <filein>Unit/Elements/ILParagraphElementTest.st</filein>
     <filein>Unit/Elements/ILRadioButtonElementTest.st</filein>
     <filein>Unit/Elements/ILTableHeadElementTest.st</filein>
@@ -81,7 +84,6 @@
     <filein>Unit/Elements/ILBodyElementTest.st</filein>
     <filein>Unit/Elements/ILTableFootElementTest.st</filein>
     <filein>Unit/Elements/ILMapElementTest.st</filein>
-    <filein>Unit/Elements/ILXHTMLElementTest.st</filein>
     <filein>Unit/Elements/ILInputElementTest.st</filein>
     <filein>Unit/Elements/ILFormElementElementTest.st</filein>
     <filein>Unit/Elements/ILLegendElementTest.st</filein>
@@ -101,6 +103,7 @@
     <file>Unit/Utilities/ILIdTest.st</file>
     <file>Unit/Utilities/ILCompositeTest.st</file>
     <file>Unit/Utilities/ILModelProxyTest.st</file>
+    <file>Unit/Buildables/ILApplicationMock.st</file>
     <file>Unit/Buildables/ILApplicationTest.st</file>
     <file>Unit/Buildables/ILWidgetMock2.st</file>
     <file>Unit/Buildables/ILWidgetTest.st</file>
@@ -109,6 +112,7 @@
     <file>Unit/Buildables/ILBuildableTest.st</file>
     <file>Unit/Buildables/ILWidgetMock3.st</file>
     <file>Unit/Buildables/ILWidgetMock1.st</file>
+    <file>Unit/Buildables/ILBuildableMock.st</file>
     <file>Unit/RequestHandlers/ILRequestHandlerTest.st</file>
     <file>Unit/RequestHandlers/ILFileHandlerTest.st</file>
     <file>Unit/RSS/ILRSSElementTest.st</file>
@@ -149,6 +153,7 @@
     <file>Unit/Elements/ILTableElementTest.st</file>
     <file>Unit/Elements/ILTableDataElementTest.st</file>
     <file>Unit/Elements/ILFormElementTest.st</file>
+    <file>Unit/Elements/ILHTMLBuilderElementTest.st</file>
     <file>Unit/Elements/ILParagraphElementTest.st</file>
     <file>Unit/Elements/ILRadioButtonElementTest.st</file>
     <file>Unit/Elements/ILTableHeadElementTest.st</file>
@@ -166,7 +171,6 @@
     <file>Unit/Elements/ILBodyElementTest.st</file>
     <file>Unit/Elements/ILTableFootElementTest.st</file>
     <file>Unit/Elements/ILMapElementTest.st</file>
-    <file>Unit/Elements/ILXHTMLElementTest.st</file>
     <file>Unit/Elements/ILInputElementTest.st</file>
     <file>Unit/Elements/ILFormElementElementTest.st</file>
     <file>Unit/Elements/ILLegendElementTest.st</file>
@@ -230,6 +234,7 @@
       Iliad.ILTableElementTest
       Iliad.ILTableDataElementTest
       Iliad.ILFormElementTest
+      Iliad.ILHTMLBuilderElementTest
       Iliad.ILParagraphElementTest
       Iliad.ILRadioButtonElementTest
       Iliad.ILTableHeadElementTest
@@ -247,7 +252,6 @@
       Iliad.ILBodyElementTest
       Iliad.ILTableFootElementTest
       Iliad.ILMapElementTest
-      Iliad.ILXHTMLElementTest
       Iliad.ILInputElementTest
       Iliad.ILFormElementElementTest
       Iliad.ILLegendElementTest
@@ -258,9 +262,11 @@
       Iliad.ILAreaElementTest
     </sunit>
   </test>
+  <filein>Unit/Buildables/ILApplicationMock.st</filein>
   <filein>Unit/Buildables/ILApplicationMock1.st</filein>
   <filein>Unit/Buildables/ILApplicationMock2.st</filein>
   <filein>Unit/Buildables/ILApplicationTest.st</filein>
+  <filein>Unit/Buildables/ILBuildableMock.st</filein>
   <filein>Unit/Buildables/ILBuildableTest.st</filein>
   <filein>Unit/Buildables/ILWidgetMock1.st</filein>
   <filein>Unit/Buildables/ILWidgetMock2.st</filein>
@@ -269,7 +275,7 @@
   <filein>Unit/Dispatching/ILDispatcherTest.st</filein>
   <filein>Unit/Dispatching/ILRouteTest.st</filein>
   <filein>Unit/Elements/ILElementTest.st</filein>
-  <filein>Unit/Elements/ILXHTMLElementTest.st</filein>
+  <filein>Unit/Elements/ILHTMLBuilderElementTest.st</filein>
   <filein>Unit/Elements/ILAnchorElementTest.st</filein>
   <filein>Unit/Elements/ILAreaElementTest.st</filein>
   <filein>Unit/Elements/ILBodyElementTest.st</filein>
@@ -343,9 +349,11 @@
   <filein>Unit/RSS/ILRSSEnclosureElementTest.st</filein>
   <filein>Unit/RSS/ILRSSGuidElementTest.st</filein>
   <filein>Unit/RSS/ILRSSSourceElementTest.st</filein>
+  <file>Unit/Buildables/ILApplicationMock.st</file>
   <file>Unit/Buildables/ILApplicationMock1.st</file>
   <file>Unit/Buildables/ILApplicationMock2.st</file>
   <file>Unit/Buildables/ILApplicationTest.st</file>
+  <file>Unit/Buildables/ILBuildableMock.st</file>
   <file>Unit/Buildables/ILBuildableTest.st</file>
   <file>Unit/Buildables/ILWidgetMock1.st</file>
   <file>Unit/Buildables/ILWidgetMock2.st</file>
@@ -354,7 +362,7 @@
   <file>Unit/Dispatching/ILDispatcherTest.st</file>
   <file>Unit/Dispatching/ILRouteTest.st</file>
   <file>Unit/Elements/ILElementTest.st</file>
-  <file>Unit/Elements/ILXHTMLElementTest.st</file>
+  <file>Unit/Elements/ILHTMLBuilderElementTest.st</file>
   <file>Unit/Elements/ILAnchorElementTest.st</file>
   <file>Unit/Elements/ILAreaElementTest.st</file>
   <file>Unit/Elements/ILBodyElementTest.st</file>

@@ -64,7 +64,7 @@ contents
             action: [self doSomething]]
 
 
-See Iliad.ILElement hierarchy (Especially Iliad.ILXHTMLElement ) for more information 
+See Iliad.ILElement hierarchy (Especially Iliad.ILHTMLBuilderElement ) for more information 
 about building HTML with elements.
 
 #contents method should *never* be called from the outside. Use #build instead. 
@@ -133,7 +133,7 @@ added to the decoration chain with #decorateWith:.'>
     ]
 
     owner [
-	"Return the widget which show me. if any"
+	"Answer the widget which shows me. if any"
 	<category: 'accessing'>
 
 	^owner
@@ -164,17 +164,23 @@ added to the decoration chain with #decorateWith:.'>
 	^self context stateRegistry
     ]
 
-    build [
+    buildContents [
 	"Do *not* override this method. Use #contents instead"
 	<category: 'building'>
 
 	self registerState.
-	self buildHead: self application page head.	
-	
+	self context addBuiltWidget: self.
+
 	^self newRootElement
 	    class: self id;
-	    build: decorator contents;
+	    build: self fullContents;
 	    yourself
+    ]
+
+    fullContents [
+	"Do *not* override this method. Use #contents instead"
+	<category: 'building'>
+	^decorator contents
     ]
 
     buildHead: aHead [
@@ -419,30 +425,9 @@ added to the decoration chain with #decorateWith:.'>
 	<category: 'states'>
 	
 	self owner
-	    ifNil: [self setDirty]
+	    ifNil: [self beDirty]
 	    ifNotNil: [self owner markDirty].
 	dependentWidgets do: [:each | each markDirty]
-    ]
-
-    setDirty [
-	"You shouldn't call this method directly unless you know what you are doing."
-	<category: 'states'>
-	
-	state := self session nextId
-    ]
-  
-    setAppended [
-	"You shouldn't call this method directly."
-	<category: 'states'>
-	
-	^self session addWidgetToAppend: self
-    ]
-
-    setPrepended [
-	"You shouldn't call this method directly."
-	<category: 'states'>
-	
-	^self session addWidgetToPrepend: self
     ]
 
     printJsonOn: aStream [
@@ -459,12 +444,17 @@ added to the decoration chain with #decorateWith:.'>
 	<category: 'private'>
 	self withDecoratorsDo: [:each |
 	    each scripts do: [:script || e |
-		e := ILXHTMLElement new javascript src: script.
+		e := ILHTMLBuilderElement new javascript src: script.
 		(aHead children includes: e) ifFalse: [
 		    aHead add: e]].
 	    each styles do: [:script || e |
-		e := ILXHTMLElement new stylesheet href: script.
+		e := ILHTMLBuilderElement new stylesheet href: script.
 		(aHead children includes: e) ifFalse: [
 		    aHead add: e]]]
+    ]
+
+    beDirty [
+	<category: 'private'>
+	state := self session nextId
     ]
 ]

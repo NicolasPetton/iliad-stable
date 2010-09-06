@@ -76,7 +76,7 @@ and wait for a ILResponseNotification to respond to them.'>
     dispatch: aRequest using: aRoute [
 	<category: 'dispatching'>
 	self withDispatchErrorHandling: [
-	    self shouldDoInitialRedirect ifTrue: [
+	    self shouldRedirect ifTrue: [
 		ILRedirectHandler new handleRequest].
 	    self context application: (self findApplicationFor: aRoute).
 	    self context application
@@ -104,13 +104,6 @@ and wait for a ILResponseNotification to respond to them.'>
 		ILErrorHandler new 
 		    error: error; 
 		    handleRequest]
-    ]
-
-    shouldDoInitialRedirect [
-	<category: 'testing'>
-	^(self request sessionField isNil and: [
-	    self request hasCookies not]) or: [
-		self request sessionField notNil and: [self request hasCookies]]
     ]
 
     createContextFor: aRequest [
@@ -157,6 +150,12 @@ and wait for a ILResponseNotification to respond to them.'>
 
     findSessionFor: aRequest [
 	<category: 'private'>
-	^ILSessionManager current findOrMakeSessionFor: aRequest
+	^ILSessionManager current sessionFor: aRequest
+    ]
+
+    shouldRedirect [
+	<category: 'testing'>
+	self request isTypeOfRequestForJson ifTrue: [^false].
+	^self request sessionField notNil and: [self request hasCookies]
     ]
 ]    

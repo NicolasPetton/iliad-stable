@@ -40,11 +40,16 @@
 
 
 ILObject subclass: ILBuildable [
-    | attributes |
+    | attributes children |
     
     <category: 'Iliad-Core-Buildables'>
     <comment: 'I am an abstract buildable object. 
 My subclasses must override #build method, which should return an instance of a subclass of Iliad.ILElement.'>
+
+    children [
+	<category: 'accessing'>
+	^children
+    ]
 
     attributeAt: aSymbol [
 	<category: 'accessing attributes'>
@@ -66,7 +71,32 @@ My subclasses must override #build method, which should return an instance of a 
 	^attributes ifNil: [attributes := Dictionary new]
     ]
 
+    send: aSymbol [
+	<category: 'actions'>
+	^self send: aSymbol to: self
+    ]
+
+    send: aSymbol to: anObject [
+	<category: 'actions'>
+	^self send: aSymbol to: anObject arguments: #()
+    ]
+
+    send: aSymbol to: anObject arguments: anArray [
+	<category: 'actions'>
+	^Grease.GRDelayedSend 
+	    receiver: anObject 
+	    selector: aSymbol 
+	    arguments: anArray
+    ]
+
     build [
+	<category: 'building'>
+	self withChildrenRegistrationDo: [
+	    ^self buildContents
+	]
+    ]
+
+    buildContents [
 	"Override this method in subclasses.
 	It must answer an Element"
 	<category: 'building'>
@@ -79,18 +109,76 @@ My subclasses must override #build method, which should return an instance of a 
 	anElement add: self build
     ]
 
-    redirectTo: aString [
+    registerChild: aBuildable [
+	<category: 'building'>
+	self children add: aBuildable
+    ]
+
+    redirectTo: anUrlString [
+	"Abort all other request handling.
+	 Redirect to anUrlString"
 	<category: 'redirecting'>
-	self application redirectTo: aString
+
+	self session
+	    redirectUrl: anUrlString;
+	    redirect
+    ]
+
+    redirectToIndex [
+	"Abort all other request handling.
+	 Redirect to the index method of this class"
+	<category: 'redirecting'>
+
+	self redirectToLocal: 'index'
     ]
 
     redirectToLocal: aString [
+	"Abort all other request handling.
+	 Make a redirection to another controller method in this application"
 	<category: 'redirecting'>
-	self application redirectToLocal: aString
+
+	self 
+	    redirectToApplication: self application class 
+	    controller: aString
+    ]
+
+    redirectToApplication: aClass [
+	"Abort all other request handling.
+	Redirect to the index method of <aClass>"
+	<category: 'redirecting'>
+
+	self redirectToApplication: aClass controller: ''
+    ]
+
+    redirectToApplication: aClass controller: aString [
+	"Abort all other request handling.
+	Redirect to the controller named <aString> of <aClass>"
+	<category: 'redirecting'>
+
+	self redirectTo: 
+	    (self context urlBuilder urlFor: aClass path, '/', aString) 
+		greaseString
+    ]
+
+    redirectToCurrentController [
+	"Abort all other request handling.
+	Redirect to the current controller method"
+	<category: 'redirecting'>
+	self redirectTo: 
+	    (self context urlBuilder urlFor: self application route pathString)
+		greaseString
     ]
 
     respondOn: aResponse [
 	<category: 'converting'>
 	self build respondOn: aResponse
+    ]
+
+    withChildrenRegistrationDo: aBlock [
+	<category: 'private'>
+	children := OrderedCollection new.
+	ILCurrentBuildable value ifNotNil: [:parent |
+	    parent registerChild: self].
+	ILCurrentBuildable use: self during: aBlock
     ]
 ]

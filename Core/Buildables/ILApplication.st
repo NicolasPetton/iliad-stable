@@ -48,11 +48,19 @@ I am is the root object of a buildable object tree. Applications have a
 set of controllers, methods used to dispatch requests to the corresponding 
 sub-tree of buildable objects (oftenly a composition of stateful widgets).
 
-You don''t have to bother about instantiating applications, the framework 
-will handle session and application instances. 
-
 In concrete subclasses, the class method #path should return the base path 
 (string) for the application.
+
+
+"""""""""""""""""""""""""""
+" Applications & UI state "
+"""""""""""""""""""""""""""
+
+You don''t have to bother about instantiating applications, the framework 
+will handle session and application instances. Application instances are stored 
+in sessions. Each session stores one instance of the same application class.
+
+Root widgets should be stored in applications to keep their state across requests.
 
 
 """"""""""""""""""""""
@@ -171,7 +179,7 @@ your own selectorFilter or plug it in using the class method #selectorFilter:'>
 	    yourself
     ]
 
-    build [
+    buildContents [
 	"Call #dispatch. A buildable is expected from #dispatch"
 	<category: 'building'>
 	
@@ -232,55 +240,6 @@ your own selectorFilter or plug it in using the class method #selectorFilter:'>
 	^nil
     ]
 
-    redirectTo: anUrlString [
-	"Abort all other request handling.
-	 Redirect to anUrlString"
-	<category: 'redirecting'>
-
-	self session
-	    redirectUrl: anUrlString;
-	    redirect
-    ]
-
-    redirectToIndex [
-	"Abort all other request handling.
-	 Redirect to the index method of this class"
-	<category: 'redirecting'>
-
-	self redirectToLocal: 'index'
-    ]
-
-    redirectToLocal: aString [
-	"Abort all other request handling.
-	 Make a redirection to another controller method in this application"
-	<category: 'redirecting'>
-
-	self redirectTo: self originalUrl , '/' , aString
-    ]
-
-    redirectToApplication: aClass [
-	"Abort all other request handling.
-	Redirect to the index method of <aClass>"
-	<category: 'redirecting'>
-
-	self redirectToApplication: aClass controller: ''
-    ]
-
-    redirectToApplication: aClass controller: aString [
-	"Abort all other request handling.
-	Redirect to the controller named <aString> of <aClass>"
-	<category: 'redirecting'>
-
-	self redirectTo: (self context urlBuilder absolutePathFor: aClass), '/', aString
-    ]
-
-    redirectToCurrentController [
-	"Abort all other request handling.
-	Redirect to the current controller method"
-	<category: 'redirecting'>
-	self redirectTo: self route pathString
-    ]
-
     respond: aBlock [
 	"Abort all other request handling"
 	<category: 'redirecting'>
@@ -310,19 +269,20 @@ your own selectorFilter or plug it in using the class method #selectorFilter:'>
     respondOn: aResponse [
 	<category: 'converting'>
 	page := self defaultPageClass new.
-	self updatePage: page.
 	page body build: self.
+	self updatePage: page.
+	self context builtWidgets do: [:each | each buildHead: page head].
 	page respondOn: aResponse
     ]
 
     defaultPageClass [
 	<category: 'defaults'>
-	^ILXHTMLPage
+	^ILHTMLPage
     ]
 
     rootElementClass [
 	<category: 'defaults'>
-	^ILXHTMLElement
+	^ILHTMLBuilderElement
     ]
  
     newRootElement [
@@ -335,11 +295,8 @@ your own selectorFilter or plug it in using the class method #selectorFilter:'>
 	 original position within the url of the request."
 	<category: 'private'>
 	
-	| curPos result |
-	curPos := self route position.
 	self route position: originalRoutePosition.
-	result := self route currentPath.
-	^result
+	^self route currentPath.
     ]
 
     setRoutePosition [

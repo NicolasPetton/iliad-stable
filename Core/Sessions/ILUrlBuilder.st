@@ -141,16 +141,17 @@ ILObject subclass: ILUrlBuilder [
 
     baseUrl [
 	<category: 'generating'>
-	baseUrl ifNil: [| url |
-	    url := ILUrl absolute: self context route pathString.
-	    self addDefaultParametersTo: url.
-	    baseUrl := self applyRewriteRulesTo: url].
+	baseUrl ifNil: [
+	    baseUrl:= self urlFor: self context route pathString].
 	^baseUrl copy
     ]
 
     urlFor: aString [
 	<category: 'generating'>
-	^self applyRewriteRulesTo: (ILUrl absolute: aString)
+	| url |
+	url := ILUrl absolute: aString.
+	self addDefaultParametersTo: url.
+	^self applyRewriteRulesTo: url
     ]
 
     urlForAction: anAction [
@@ -177,17 +178,7 @@ ILObject subclass: ILUrlBuilder [
 
     urlForRedirection: aString [
 	<category: 'generating'>
-	| url |
-	url := ILUrl absolute: aString.
-	self shouldUseSessionField ifTrue: [
-	    url addParameter: self sessionKey value: self session id greaseString].
-	^url
-    ]
-
-    absolutePathFor: anApplicationClass [
-	<category: 'generating'>
-	^(self applyRewriteRulesTo: 
-	    (ILUrl absolute: anApplicationClass path)) greaseString
+	^ILUrl absolute: aString
     ]
 
     applyRewriteRulesTo: anUrl [
