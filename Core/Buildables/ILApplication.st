@@ -39,7 +39,7 @@
 
 
 ILBuildable subclass: ILApplication [
-    | model originalRoutePosition page |
+    | model page |
 
     <category: 'Iliad-Core-Buildables'>
     <comment: 'I am the Iliad implementation of an application.
@@ -100,6 +100,13 @@ your own selectorFilter or plug it in using the class method #selectorFilter:'>
 	    ^''
 	]
 
+	absolutePath [
+	    <category: 'accessing'>
+	    ^String streamContents: [:stream |
+		(self path startsWith: '/') ifFalse: [stream nextPut: $/].
+		stream nextPutAll: self path]
+	]
+
 	selectorFilter [
 	    <category: 'accessing'>
 	    ^selectorFilter ifNil: [self defaultSelectorFilter]
@@ -144,21 +151,6 @@ your own selectorFilter or plug it in using the class method #selectorFilter:'>
 	model := anObject
     ]
 
-    route [
-	<category: 'accessing'>
-	^self context route
-    ]
-
-    hashRoute [
-	<category: 'accessing'>
-	^self context hashRoute
-    ]
-
-    originalRoutePosition [
-	<category: 'accessing'>
-	^originalRoutePosition
-    ]
-
     page [
 	<category: 'accessing'>
 	^page
@@ -188,16 +180,6 @@ your own selectorFilter or plug it in using the class method #selectorFilter:'>
 	    yourself
     ]
 
-    updatePage: aPage [
-	"Override to add elements to aPage.
-	 super should always be called"
-	<category: 'building'>
-
-	aPage head javascript src: '/javascripts/jquery132min.js'.
-	aPage head javascript src: '/javascripts/no_conflict.js'.
-	aPage head javascript src: '/javascripts/iliad.js'.
-    ]
-
     allowedSelector: aSelector [
 	"Answer true if <aSelector> is ok to call from a URL.
 	 Default implementation is to use the pluggable filter block."
@@ -212,9 +194,8 @@ your own selectorFilter or plug it in using the class method #selectorFilter:'>
 	 different from nil, consider it handled."
 	<category: 'dispatching'>
 
-	self setRoutePosition.
 	^self dispatchOverride ifNil: [
-	    self dispatchOn: self route next] 
+	    self dispatchOn: self router controller] 
     ]
 
     dispatchOn: aMethod [
@@ -238,6 +219,31 @@ your own selectorFilter or plug it in using the class method #selectorFilter:'>
 	<category: 'dispatching'>
 
 	^nil
+    ]
+
+    updatePage: aPage [
+	"Override to add elements to aPage.
+	 super should always be called"
+	<category: 'updating'>
+
+	aPage head javascript src: '/javascripts/jquery132min.js'.
+	aPage head javascript src: '/javascripts/no_conflict.js'.
+	aPage head javascript src: '/javascripts/iliad.js'.
+    ]
+
+    updateFromRoute: aRoute [
+	<category: 'updating'>
+	"Override this method to update to state of the application 
+	from the request url route.
+
+	This method will be called for each new request"
+
+    ]
+
+    updateBaseUrl: anUrl [
+	<category: 'updating'>
+	"Update the base url used for the current context"
+
     ]
 
     respond: aBlock [
@@ -288,21 +294,5 @@ your own selectorFilter or plug it in using the class method #selectorFilter:'>
     newRootElement [
 	<category: 'private'>
 	^self rootElementClass new
-    ]
-
-    originalUrl [
-	"Answer an url String representing this application's
-	 original position within the url of the request."
-	<category: 'private'>
-	
-	self route position: originalRoutePosition.
-	^self route currentPath.
-    ]
-
-    setRoutePosition [
-	<category: 'private'>
-	originalRoutePosition
-	    ifNil: [originalRoutePosition := self route position]
-	    ifNotNil: [self route position: originalRoutePosition]
     ]
 ]

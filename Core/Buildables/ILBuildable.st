@@ -48,7 +48,12 @@ My subclasses must override #build method, which should return an instance of a 
 
     children [
 	<category: 'accessing'>
-	^children
+	^children ifNil: [children := OrderedCollection new]
+    ]
+
+    router [
+	<category: 'accessing'>
+	^self context router
     ]
 
     attributeAt: aSymbol [
@@ -111,7 +116,8 @@ My subclasses must override #build method, which should return an instance of a 
 
     registerChild: aBuildable [
 	<category: 'building'>
-	self children add: aBuildable
+	(self children includes: aBuildable) ifFalse: [
+	    self children add: aBuildable]
     ]
 
     redirectTo: anUrlString [
@@ -165,7 +171,7 @@ My subclasses must override #build method, which should return an instance of a 
 	Redirect to the current controller method"
 	<category: 'redirecting'>
 	self redirectTo: 
-	    (self context urlBuilder urlFor: self application route pathString)
+	    (self context urlBuilder urlFor: self router route pathString)
 		greaseString
     ]
 
@@ -174,9 +180,14 @@ My subclasses must override #build method, which should return an instance of a 
 	self build respondOn: aResponse
     ]
 
+    printHtmlString [
+	<category: 'printing'>
+	^String streamContents: [:str |
+	    self build printHtmlOn: str]
+    ]
+
     withChildrenRegistrationDo: aBlock [
 	<category: 'private'>
-	children := OrderedCollection new.
 	ILCurrentBuildable value ifNotNil: [:parent |
 	    parent registerChild: self].
 	ILCurrentBuildable use: self during: aBlock

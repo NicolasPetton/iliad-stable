@@ -82,8 +82,9 @@ var iliad = (function() {
 			}
 			var button = jQuery(event.target).closest("button");
 			if(button.length == 1) {
-				enableSubmitAction(button);
+				addHiddenInput(button);
 				evaluateFormElementAction(button, event);
+				removeHiddenInput(button);
 			}
 		})
 	}
@@ -116,13 +117,22 @@ var iliad = (function() {
 		}
 	}
 
-	function enableSubmitAction(button) {
+	function addHiddenInput(button) {
 		var name = jQuery(button).attr("name");
 		if(name) {
 			var hidden = "<input type='hidden' name='" + 
 				name + "'></input>";
 			var form = jQuery(button).closest("form");
 			jQuery(form).append(hidden);
+		}
+	}
+
+	function removeHiddenInput(button) {
+		var name = jQuery(button).attr("name");
+		if(name) {
+			jQuery(button).closest("form")
+				.find("input:hidden[name="+ name + "]")
+				.replaceWith("");
 		}
 	}
 
@@ -143,7 +153,7 @@ var iliad = (function() {
 				upload_target.appendTo('body');
 			}
 			upload_target.one('load', function(e) {
-				evaluateAction('?_state='+jQuery(form).find('input[name=_state]').val());
+				evaluateAction(jQuery(form).children("input[name=_callback]").val());
 			});
 			jQuery(form).append(hidden);
 			jQuery(form).attr('target', '_upload_target');
@@ -369,7 +379,6 @@ var iliad = (function() {
 		evaluateMultipartFormAction:   evaluateMultipartFormAction,
 		evaluateFormElementAction:     evaluateFormElementAction,
 		evaluateAction:                evaluateAction,
-		enableSubmitAction:            enableSubmitAction,
 		checkHashChange:               checkHashChange,
 		showAjaxLoader:                showAjaxLoader,
 		disableAjax:                   disableAjax,

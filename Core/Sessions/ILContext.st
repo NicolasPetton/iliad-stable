@@ -38,24 +38,24 @@
 
 ILObject subclass: ILContext [
 
-    | request application route hashRoute session urlBuilder previousStateRegistry stateRegistry builtWidgets |
+    | request router session urlBuilder previousStateRegistry stateRegistry builtWidgets attributes |
     <category: 'Iliad-Core-Sessions'>
     <comment: 'I store current request context objects:
-- the route
+
+- the router
 - the session
-- the application
 - the request itself
 
-A can be accessed through ILObject>>context'>
+I can be accessed through ILObject>>context'>
+
+    router [
+	<category: 'accessing'>
+	^router ifNil: [router := ILRouter new]
+    ]
 
     application [
 	<category: 'accessing'>
-	^application
-    ]
-
-    application: anApplication [
-	<category: 'accessing'>
-	application := anApplication
+	^self router application
     ]
 
     urlBuilder [
@@ -87,19 +87,7 @@ A can be accessed through ILObject>>context'>
 	<category: 'accessing'>
 	session := aSession
     ]
-
-    route [
-	<category: 'accessing'>
-	^route ifNil: [route := ILRoute path: self request url path]
-    ]
-    
-    hashRoute [
-	<category: 'accessing'>
-	| hash |
-	hash := self request hashLocationField ifNil: [''].
-	^hashRoute ifNil: [hashRoute := ILRoute path: (hash tokenize: '/')]
-    ]
-
+   
     stateRegistry [
 	<category: 'accessing'>
 	^stateRegistry ifNil: [
@@ -116,6 +104,21 @@ A can be accessed through ILObject>>context'>
     builtWidgets [
 	<category: 'accessing'>
 	^builtWidgets ifNil: [builtWidgets := OrderedCollection new]
+    ]
+
+    attributes [
+	<category: 'accessing'>
+	^attributes ifNil: [attributes := Dictionary new]
+    ]
+
+    attributeAt: aKey [
+	<category: 'accessing-attributes'>
+	^self attributes at: aKey ifAbsent: [nil]
+    ]
+
+    attributeAt: aKey put: anObject [
+	<category: 'accessing-attributes'>
+	self attributes at: aKey put: anObject
     ]
 
     addBuiltWidget: aWidget [
